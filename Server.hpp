@@ -1,22 +1,33 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <sys/ioctl.h>
-#include <sys/poll.h>
-#include <sys/socket.h>
-#include <sys/time.h>
-#include <netinet/in.h>
-#include <errno.h>
+#include <string>
 #include <iostream>
+#include <poll.h>
+#include <vector>
+#include <arpa/inet.h>
+#include <unistd.h>
+#include <cstring> //a retirer
 
-#define server_port 12345
+class   Client;
 
-class server
+class Server
 {
 
+    public:
 
+        Server(int port, const std::string &password);
+        ~Server();
+        void start();
+        void stop();
+    
     private:
+    
+        void    initializ_socket();
+        void    Management_connection();
+        void    Management_client(int clientFd);
+        void    removeClient(int clientFd);
 
-        int _len;
-        int _rc;
-        int _on;
+        int _port;
+        std::string _password;
+        int _serverFd;
+        std::vector<Client> _clients;
+        std::vector<pollfd> _pollFds;
 };
